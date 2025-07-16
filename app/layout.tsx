@@ -13,24 +13,24 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'PackIt - Smart Travel Packing Assistant',
-  description: 'Generate personalized packing lists based on weather forecasts and travel activities. Never forget essential items again with PackIt\'s intelligent packing suggestions.',
+  title: 'PackWise - Smart Travel Packing Assistant',
+  description: 'Generate personalized packing lists based on weather forecasts and travel activities. Never forget essential items again with PackWise\'s intelligent packing suggestions.',
   keywords: 'travel, packing, vacation, trip planning, weather forecast, packing list, travel assistant',
-  authors: [{ name: 'PackIt Team' }],
-  creator: 'PackIt',
-  publisher: 'PackIt',
+  authors: [{ name: 'PackWise Team' }],
+  creator: 'PackWise',
+  publisher: 'PackWise',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   openGraph: {
-    title: 'PackIt - Smart Travel Packing Assistant',
+    title: 'PackWise - Smart Travel Packing Assistant',
     description: 'Generate personalized packing lists based on weather forecasts and travel activities.',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    siteName: 'PackIt',
+    siteName: 'PackWise',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'PackIt - Smart Travel Packing Assistant',
+        alt: 'PackWise - Smart Travel Packing Assistant',
       },
     ],
     locale: 'en_US',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PackIt - Smart Travel Packing Assistant',
+    title: 'PackWise - Smart Travel Packing Assistant',
     description: 'Generate personalized packing lists based on weather forecasts and travel activities.',
     images: ['/og-image.png'],
   },
@@ -87,7 +87,7 @@ export default function RootLayout({
                   <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-lg">🧳</span>
                   </div>
-                  <h1 className="text-2xl font-bold text-gray-900">PackIt</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">PackWise</h1>
                 </div>
                 <div className="hidden sm:block">
                   <p className="text-sm text-gray-600">Smart Travel Packing Assistant</p>
@@ -116,7 +116,7 @@ export default function RootLayout({
                   "The world is a book and those who do not travel read only one page." - Saint Augustine
                 </p>
                 <p>
-                  Made with ❤️ by PackIt Team • Powered by OpenWeatherMap API
+                  Made with ❤️ by PackWise Team • Powered by OpenWeatherMap API
                 </p>
               </div>
             </div>

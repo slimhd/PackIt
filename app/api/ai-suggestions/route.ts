@@ -80,7 +80,7 @@ Optional Items: ${baseList.optional.join(', ') || 'None yet'}
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${openrouterApiKey}`,
         'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://localhost:3000',
-        'X-Title': 'PackIt - AI Travel Packing Assistant'
+        'X-Title': 'PackWise - AI Travel Packing Assistant'
       },
       body: JSON.stringify({
         model: openrouterModel,

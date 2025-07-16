@@ -24,7 +24,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Welcome to{' '}
             <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              PackIt
+              PackWise
             </span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">

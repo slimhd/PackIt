@@ -1,4 +1,4 @@
-# 🧳 PackIt - Smart Travel Packing Assistant
+# 🧳 PackWise - Smart Travel Packing Assistant
 
 A modern, production-ready web application that generates personalized packing lists based on real weather forecasts and travel activities. Now with built-in monetization, security enhancements, and GDPR compliance.
 
@@ -50,8 +50,8 @@ A modern, production-ready web application that generates personalized packing l
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/packit.git
-   cd packit
+   git clone https://github.com/yourusername/packwise.git
+   cd packwise
    ```
 
 2. **Install dependencies**
@@ -176,7 +176,7 @@ For other platforms (Netlify, Railway, etc.):
 ## 📁 Project Structure
 
 ```
-PackIt/
+PackWise/
 ├── app/                    # Next.js App Router
 │   ├── api/               # Backend API routes
 │   │   └── weather/       # Secure weather API proxy

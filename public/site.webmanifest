@@ -1,6 +1,6 @@
 {
-  "name": "PackIt - Smart Travel Packing Assistant",
-  "short_name": "PackIt",
+  "name": "PackWise - Smart Travel Packing Assistant",
+  "short_name": "PackWise",
   "description": "Generate personalized packing lists based on weather forecasts and travel activities. Never forget essential items again!",
   "start_url": "/",
   "display": "standalone",

@@ -10,7 +10,7 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Information We Collect</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              PackIt is designed with privacy in mind. We collect minimal information to provide our travel packing service:
+              PackWise is designed with privacy in mind. We collect minimal information to provide our travel packing service:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li>Travel destination and dates (not stored, used only for weather forecast)</li>
@@ -51,7 +51,7 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Third-Party Services</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              PackIt integrates with the following third-party services:
+              PackWise integrates with the following third-party services:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li><strong>OpenWeatherMap API:</strong> For weather forecasts (no personal data shared)</li>
@@ -98,8 +98,8 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact Us</h2>
             <p className="text-gray-600 leading-relaxed">
               If you have any questions about this privacy policy or your data rights, please contact us at{' '}
-              <a href="mailto:privacy@packit-travel.com" className="text-primary-600 hover:text-primary-700 underline">
-                privacy@packit-travel.com
+                        <a href="mailto:privacy@packwise-travel.com" className="text-primary-600 hover:text-primary-700 underline">
+            privacy@packwise-travel.com
               </a>
             </p>
           </section>
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
             href="/"
             className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium"
           >
-            ← Back to PackIt
+            ← Back to PackWise
           </Link>
         </div>
       </div>

@@ -28,7 +28,7 @@ const DownloadButton = () => {
     const link = document.createElement('a');
     
     link.href = url;
-    link.download = `PackIt-${destination.replace(/[^a-zA-Z0-9]/g, '_')}-${new Date().toISOString().split('T')[0]}.txt`;
+    link.download = `PackWise-${destination.replace(/[^a-zA-Z0-9]/g, '_')}-${new Date().toISOString().split('T')[0]}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
