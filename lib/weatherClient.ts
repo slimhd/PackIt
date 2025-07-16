@@ -1,8 +1,22 @@
 import { WeatherData } from '@/store/usePackStore';
 
-export async function fetchWeatherForecast(city: string): Promise<WeatherData> {
+export async function fetchWeatherForecast(
+  city: string, 
+  startDate?: Date, 
+  endDate?: Date
+): Promise<WeatherData> {
   try {
-    const response = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+    const params = new URLSearchParams({ city });
+    
+    if (startDate) {
+      params.append('startDate', startDate.toISOString().split('T')[0]);
+    }
+    
+    if (endDate) {
+      params.append('endDate', endDate.toISOString().split('T')[0]);
+    }
+    
+    const response = await fetch(`/api/weather?${params.toString()}`);
     
     if (!response.ok) {
       const errorData = await response.json();

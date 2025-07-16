@@ -39,6 +39,7 @@ const Form = () => {
 
   const today = startOfToday();
   const minEndDate = startDate ? addDays(startDate, 1) : addDays(today, 1);
+  const maxDate = addDays(today, 30); // Limit to 30 days from today
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -137,7 +138,15 @@ const Form = () => {
 
   const handleStartDateChange = (date: string) => {
     const newStartDate = new Date(date);
+    
+    // Validate date is within 30-day range
+    if (newStartDate > maxDate) {
+      setError('We currently support weather-based suggestions only for trips within 30 days from today.');
+      return;
+    }
+    
     setStartDate(newStartDate);
+    setError(null); // Clear any previous error
     
     // Adjust end date if it's before the new start date
     if (endDate && isBefore(endDate, addDays(newStartDate, 1))) {
@@ -146,7 +155,16 @@ const Form = () => {
   };
 
   const handleEndDateChange = (date: string) => {
-    setEndDate(new Date(date));
+    const newEndDate = new Date(date);
+    
+    // Validate date is within 30-day range
+    if (newEndDate > maxDate) {
+      setError('We currently support weather-based suggestions only for trips within 30 days from today.');
+      return;
+    }
+    
+    setEndDate(newEndDate);
+    setError(null); // Clear any previous error
   };
 
   // Helper function to convert PackingItem[] to base list format for AI
@@ -188,12 +206,18 @@ const Form = () => {
       return;
     }
 
+    // Validate dates are within 30-day range
+    if (startDate > maxDate || endDate > maxDate) {
+      setError('We currently support weather-based suggestions only for trips within 30 days from today.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      // Fetch weather data
-      const weatherData = await fetchWeatherForecast(destination);
+      // Fetch weather data with travel dates for accurate forecasting
+      const weatherData = await fetchWeatherForecast(destination, startDate, endDate);
       setWeatherData(weatherData);
 
       // Generate base packing list
@@ -391,6 +415,7 @@ const Form = () => {
               value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
               onChange={(e) => handleStartDateChange(e.target.value)}
               min={format(today, 'yyyy-MM-dd')}
+              max={format(maxDate, 'yyyy-MM-dd')}
               className="input-field"
               required
             />
@@ -407,6 +432,7 @@ const Form = () => {
               value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
               onChange={(e) => handleEndDateChange(e.target.value)}
               min={format(minEndDate, 'yyyy-MM-dd')}
+              max={format(maxDate, 'yyyy-MM-dd')}
               className="input-field"
               required
             />

@@ -3,26 +3,58 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 const API_KEY = process.env.WEATHER_API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+const PRO_BASE_URL = 'https://pro.openweathermap.org/data/2.5';
 const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
 
-interface OpenWeatherResponse {
+interface OpenWeatherClimateResponse {
+  cod: string;
+  message: number;
+  cnt: number;
+  city: {
+    id: number;
+    name: string;
+    coord: {
+      lat: number;
+      lon: number;
+    };
+    country: string;
+    population: number;
+    timezone: number;
+  };
   list: {
     dt: number;
-    main: {
-      temp_min: number;
-      temp_max: number;
+    sunrise: number;
+    sunset: number;
+    temp: {
+      day: number;
+      min: number;
+      max: number;
+      night: number;
+      eve: number;
+      morn: number;
     };
+    feels_like: {
+      day: number;
+      night: number;
+      eve: number;
+      morn: number;
+    };
+    pressure: number;
+    humidity: number;
     weather: {
+      id: number;
       main: string;
       description: string;
       icon: string;
     }[];
-    dt_txt: string;
+    speed: number;
+    deg: number;
+    gust?: number;
+    clouds: number;
+    pop?: number;
+    rain?: number;
+    snow?: number;
   }[];
-  city: {
-    name: string;
-    country: string;
-  };
 }
 
 function generateConditionText(conditions: string[]): string {
@@ -71,6 +103,8 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const city = searchParams.get('city');
   const action = searchParams.get('action');
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
 
   if (!API_KEY) {
     return NextResponse.json(
@@ -127,6 +161,21 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Validate date range (max 30 days from today)
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 30);
+
+    if (startDate) {
+      const start = new Date(startDate);
+      if (start > maxDate) {
+        return NextResponse.json(
+          { error: 'We currently support weather-based suggestions only for trips within 30 days from today.' },
+          { status: 400 }
+        );
+      }
+    }
+
     // First, get coordinates for the city using FREE geocoding API
     const geoResponse = await fetch(
       `${GEO_URL}/direct?q=${encodeURIComponent(city)}&limit=1&appid=${API_KEY}`
@@ -162,15 +211,15 @@ export async function GET(request: NextRequest) {
 
     const { lat, lon, name, country } = geoData[0];
 
-    // Get 5-day forecast using coordinates
+    // Get 30-day climate forecast using Pro API
     const forecastResponse = await fetch(
-      `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      `${PRO_BASE_URL}/forecast/climate?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&cnt=30`
     );
 
     if (!forecastResponse.ok) {
       if (forecastResponse.status === 401) {
         return NextResponse.json(
-          { error: `API key unauthorized for weather forecast. Please check server configuration.` },
+          { error: `API key unauthorized for 30-day climate forecast. Please check server configuration and ensure you have a Pro subscription.` },
           { status: 401 }
         );
       }
@@ -180,57 +229,55 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const forecastData: OpenWeatherResponse = await forecastResponse.json();
+    const forecastData: OpenWeatherClimateResponse = await forecastResponse.json();
 
-    // Process forecast data - group by day and get daily min/max
-    const dailyForecasts = new Map();
-    
-    forecastData.list.forEach(item => {
-      const date = item.dt_txt.split(' ')[0]; // Get YYYY-MM-DD
+    // Process forecast data - convert to our format
+    const forecast = forecastData.list.map(item => {
+      const date = new Date(item.dt * 1000).toISOString().split('T')[0]; // Convert Unix timestamp to YYYY-MM-DD
       
-      if (!dailyForecasts.has(date)) {
-        dailyForecasts.set(date, {
-          date,
-          temp_min: item.main.temp_min,
-          temp_max: item.main.temp_max,
-          description: item.weather[0].description,
-          main: item.weather[0].main,
-          icon: item.weather[0].icon,
-          conditions: [item.weather[0].main]
-        });
-      } else {
-        const existing = dailyForecasts.get(date);
-        existing.temp_min = Math.min(existing.temp_min, item.main.temp_min);
-        existing.temp_max = Math.max(existing.temp_max, item.main.temp_max);
-        if (!existing.conditions.includes(item.weather[0].main)) {
-          existing.conditions.push(item.weather[0].main);
-        }
-      }
+      return {
+        date,
+        temp_min: Math.round(item.temp.min),
+        temp_max: Math.round(item.temp.max),
+        description: item.weather[0]?.description || 'No description',
+        main: item.weather[0]?.main || 'Clear',
+        icon: item.weather[0]?.icon || '01d'
+      };
     });
 
-    // Convert to array and take first 5 days
-    const forecast = Array.from(dailyForecasts.values()).slice(0, 5);
+    // Filter forecast for travel dates if provided
+    let relevantForecast = forecast;
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      
+      relevantForecast = forecast.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= start && itemDate <= end;
+      });
+      
+      // If no forecast data available for travel dates, use next available days
+      if (relevantForecast.length === 0) {
+        relevantForecast = forecast.slice(0, 5); // Take first 5 days as fallback
+      }
+    } else {
+      // Default to first 5 days if no specific dates provided
+      relevantForecast = forecast.slice(0, 5);
+    }
 
-    // Generate weather summary
-    const minTemp = Math.min(...forecast.map(f => f.temp_min));
-    const maxTemp = Math.max(...forecast.map(f => f.temp_max));
+    // Generate weather summary from relevant forecast data
+    const minTemp = Math.min(...relevantForecast.map(f => f.temp_min));
+    const maxTemp = Math.max(...relevantForecast.map(f => f.temp_max));
     
     const allConditions = new Set<string>();
-    forecast.forEach(f => f.conditions.forEach((c: string) => allConditions.add(c)));
+    relevantForecast.forEach(f => allConditions.add(f.main));
     
     const conditionText = generateConditionText(Array.from(allConditions));
-    const summary = `Expect ${Math.round(minTemp)}°C - ${Math.round(maxTemp)}°C, ${conditionText}.`;
+    const summary = `Expect ${minTemp}°C - ${maxTemp}°C, ${conditionText}.`;
 
     const weatherData = {
       city: `${name}, ${country}`,
-      forecast: forecast.map(f => ({
-        date: f.date,
-        temp_min: Math.round(f.temp_min),
-        temp_max: Math.round(f.temp_max),
-        description: f.description,
-        main: f.main,
-        icon: f.icon
-      })),
+      forecast: relevantForecast,
       summary
     };
 
