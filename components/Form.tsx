@@ -14,12 +14,10 @@ const Form = () => {
     startDate,
     endDate,
     selectedActivities,
-    tripDescription,
     setDestination,
     setStartDate,
     setEndDate,
     toggleActivity,
-    setTripDescription,
     setWeatherData,
     setPackingList,
     addAISuggestions,
@@ -203,7 +201,7 @@ const Form = () => {
       setPackingList(basePackingList);
 
       // Get AI suggestions with full trip context
-      if (tripDescription?.trim() || selectedActivities.length > 0) {
+      if (selectedActivities.length > 0) {
         setLoadingAI(true);
         try {
           // Convert base packing list to format expected by AI
@@ -216,7 +214,6 @@ const Form = () => {
             },
             body: JSON.stringify({
               destination: destination.trim(),
-              tripDescription: tripDescription?.trim() || '',
               startDate: startDate.toISOString().split('T')[0],
               endDate: endDate.toISOString().split('T')[0],
               activities: selectedActivities.map(activity => activity.name),
@@ -440,26 +437,6 @@ const Form = () => {
               );
             })}
           </div>
-        </div>
-
-        {/* Smart Trip Description Field */}
-        <div>
-          <label htmlFor="tripDescription" className="block text-sm font-medium text-gray-700 mb-2">
-            <span className="inline-flex items-center">
-              🧠 <span className="ml-2">Describe your trip (optional)</span>
-            </span>
-          </label>
-          <textarea
-            id="tripDescription"
-            value={tripDescription}
-            onChange={(e) => setTripDescription(e.target.value)}
-            placeholder="e.g. I'm going to Norway for 10 days to hike and explore fjords."
-            className="input-field min-h-[100px] resize-y"
-            rows={3}
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            Optional: Get AI-powered smart suggestions based on your trip description
-          </p>
         </div>
 
         {/* Submit Button */}
