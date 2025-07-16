@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import GDPRBanner from '@/components/GDPRBanner'
 import AdSlot from '@/components/AdSlot'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -134,6 +135,7 @@ export default function RootLayout({
           {/* GDPR Banner */}
           <GDPRBanner />
         </div>
+        <Analytics />
       </body>
     </html>
   )
