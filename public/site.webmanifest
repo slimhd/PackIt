@@ -1,0 +1,36 @@
+{
+  "name": "PackIt - Smart Travel Packing Assistant",
+  "short_name": "PackIt",
+  "description": "Generate personalized packing lists based on weather forecasts and travel activities. Never forget essential items again!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["travel", "productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Plan Trip",
+      "short_name": "Plan",
+      "description": "Start planning a new trip",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+} 
