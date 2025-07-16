@@ -98,8 +98,8 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact Us</h2>
             <p className="text-gray-600 leading-relaxed">
               If you have any questions about this privacy policy or your data rights, please contact us at{' '}
-                        <a href="mailto:privacy@packwise-travel.com" className="text-primary-600 hover:text-primary-700 underline">
-            privacy@packwise-travel.com
+                        <a href="mailto:packwiseteam@gmail.com" className="text-primary-600 hover:text-primary-700 underline">
+            packwiseteam@gmail.com
               </a>
             </p>
           </section>
