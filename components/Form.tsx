@@ -395,15 +395,8 @@ const Form = () => {
               onChange={(e) => handleStartDateChange(e.target.value)}
               min={format(today, 'yyyy-MM-dd')}
               className="input-field"
-              lang="en-US"
-              placeholder="dd/mm/yyyy"
-              data-date-format="dd/mm/yyyy"
-              style={{ colorScheme: 'light' }}
               required
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Format: DD/MM/YYYY (e.g., 25/12/2024)
-            </p>
           </div>
           
           <div>
@@ -418,15 +411,8 @@ const Form = () => {
               onChange={(e) => handleEndDateChange(e.target.value)}
               min={format(minEndDate, 'yyyy-MM-dd')}
               className="input-field"
-              lang="en-US"
-              placeholder="dd/mm/yyyy"
-              data-date-format="dd/mm/yyyy"
-              style={{ colorScheme: 'light' }}
               required
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Format: DD/MM/YYYY (e.g., 31/12/2024)
-            </p>
           </div>
         </div>
 
