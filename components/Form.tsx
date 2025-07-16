@@ -269,8 +269,8 @@ const Form = () => {
             
             if (response.status === 429) {
               // Rate limit exceeded - show user-friendly message
-              setError('Whoa there! Too many requests. Please wait a moment before trying again.');
-              setTimeout(() => setError(null), 5000);
+              setError('Whoa there! Too many requests. Please wait a minute before trying again.');
+              setTimeout(() => setError(null), 30000); // Show for 30 seconds to give user time to wait
             } else if (errorData.error !== 'AI service not configured') {
               setError('Couldn\'t fetch smart suggestions. You can still use weather-based packing.');
               setTimeout(() => setError(null), 3000);

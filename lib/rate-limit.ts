@@ -8,6 +8,6 @@ const redis = new Redis({
 
 export const rateLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(5, "1 m"), // 5 requests per minute
+  limiter: Ratelimit.slidingWindow(15, "1 m"), // 15 requests per minute (more user-friendly)
   analytics: true,
 }); 
