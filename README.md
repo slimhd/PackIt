@@ -50,8 +50,8 @@ A modern, production-ready web application that generates personalized packing l
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/packwise.git
-   cd packwise
+   git clone https://github.com/slimhd/PackWise.git
+   cd PackWise
    ```
 
 2. **Install dependencies**
