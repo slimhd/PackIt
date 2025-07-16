@@ -55,9 +55,9 @@ const PackingList = () => {
     return groups;
   }, {} as { [key: string]: typeof packingList });
 
-  // Group AI suggestions by category
+  // Group AI suggestions by category  
   const groupedAISuggestions = aiSuggestions.reduce((groups, item) => {
-    const category = item.category;
+    const category = item.category.replace('AI ', '');
     if (!groups[category]) {
       groups[category] = [];
     }
@@ -238,7 +238,7 @@ const PackingList = () => {
       </div>
 
       {/* AI Smart Suggestions Section */}
-      {aiSuggestions.length > 0 && (
+      {packingList.filter(item => item.isAISuggestion).length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -247,10 +247,10 @@ const PackingList = () => {
           <div className="flex items-center mb-4">
             <span className="text-2xl mr-3">🧠</span>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Additional AI Suggestions</h2>
+              <h2 className="text-xl font-bold text-gray-900">Smart AI Suggestions</h2>
               <p className="text-sm text-gray-600 flex items-center">
                 <span className="mr-1">🤖</span>
-                Personalized recommendations based on your complete trip context
+                Personalized recommendations based on your destination and activities
               </p>
             </div>
           </div>
@@ -259,8 +259,8 @@ const PackingList = () => {
             {Object.keys(groupedAISuggestions).sort().map((category) => (
               <div key={category} className="space-y-2">
                 <h3 className="text-md font-semibold text-blue-900 flex items-center">
-                  <span className="mr-2">✨</span>
-                  {category.replace('AI ', '')} ({groupedAISuggestions[category].length})
+                  <span className="mr-2">🤖</span>
+                  {category} ({groupedAISuggestions[category].length})
                 </h3>
                 <div className="space-y-2 pl-4">
                   {groupedAISuggestions[category].map((item) => (
@@ -275,7 +275,7 @@ const PackingList = () => {
                 </div>
               </div>
             ))}
-            {aiSuggestions.length === 0 && (
+            {packingList.filter(item => item.isAISuggestion).length === 0 && (
               <div className="text-center py-4 text-gray-500">
                 <p>🎯 Your packing list looks complete! No additional suggestions at this time.</p>
               </div>

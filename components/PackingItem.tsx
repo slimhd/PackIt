@@ -58,7 +58,7 @@ const PackingItem = ({
             </span>
             <div className="flex items-center space-x-2">
               {item.isAISuggestion && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
+                <span className="text-xs px-2 py-1 rounded-full flex items-center bg-purple-100 text-purple-800">
                   <span className="mr-1">🤖</span>
                   AI
                 </span>

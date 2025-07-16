@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     const openrouterApiKey = process.env.OPENROUTER_API_KEY;
-    const openrouterModel = process.env.OPENROUTER_MODEL || 'tngtech/deepseek-r1t2-chimera:free';
+    const openrouterModel = 'tngtech/deepseek-r1t2-chimera:free'; // Using deepseek model
 
     if (!openrouterApiKey) {
       console.error('OpenRouter API key not configured');
