@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { usePackStore } from '@/store/usePackStore';
 import PackingItem from './PackingItem';
-// import DownloadButton from './DownloadButton';
+import DownloadButton from './DownloadButton';
 
 const PackingList = () => {
   const {
@@ -170,7 +170,7 @@ const PackingList = () => {
           </motion.button>
         </div>
 
-        {/* <DownloadButton /> */}
+        <DownloadButton />
       </div>
 
       {/* Add Custom Item Form */}
