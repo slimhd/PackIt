@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Link from 'next/link'
 import './globals.css'
 import GDPRBanner from '@/components/GDPRBanner'
 import AdSlot from '@/components/AdSlot'
@@ -109,6 +110,21 @@ export default function RootLayout({
                   type="inline" 
                   className="mx-auto"
                 />
+              </div>
+              
+              {/* Footer Navigation */}
+              <div className="flex flex-col items-center space-y-4 mb-6">
+                <nav className="flex flex-wrap justify-center gap-6 text-sm">
+                  <Link href="/about" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">
+                    About & Contact
+                  </Link>
+                  <Link href="/privacy-policy" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">
+                    Privacy Policy
+                  </Link>
+                  <Link href="/privacy" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">
+                    Privacy & Ads
+                  </Link>
+                </nav>
               </div>
               
               <div className="text-center text-sm text-gray-600">
