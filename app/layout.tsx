@@ -67,6 +67,15 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/site.webmanifest" />
+        {/* Google AdSense - Only loads when NEXT_PUBLIC_ADSENSE_CLIENT_ID is configured */}
+        {/* This pattern ensures AdSense is never loaded in development without proper setup */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </head>
       <body className={`${inter.className} min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50`}>
         <div className="min-h-screen flex flex-col">
