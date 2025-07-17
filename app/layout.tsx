@@ -79,17 +79,6 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50`}>
         <div className="min-h-screen flex flex-col">
-          {/* Top Banner Ad */}
-          <div className="bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-              <AdSlot 
-                slotId="header-banner" 
-                type="banner" 
-                className="mb-2"
-              />
-            </div>
-          </div>
-
           <header className="bg-white shadow-sm border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
               <div className="flex items-center justify-between">
