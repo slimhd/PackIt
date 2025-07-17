@@ -15,23 +15,24 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Welcome to{' '}
-            <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              PackWise
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Never forget essential items again! Get personalized packing lists based on real weather forecasts 
-            and your planned activities. Pack smart, travel worry-free.
-          </p>
-        </motion.div>
+        {/* Hero Section with Enhanced SEO Content */}
+        <section className="text-center mb-12">
+          <motion.div 
+            initial={{ opacity: 0, y:30 }}
+            animate={{ opacity: 1, y:0 }}
+          >
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              PackWise – Your Smart AI-Powered Packing Assistant ✈️
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-6">
+              PackWise helps you pack smarter for your next trip by using weather data, activity types, and even AI to give you a perfect packing checklist. Whether you're going hiking or attending a business summit, PackWise tailors your list intelligently.
+            </p>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Never forget essential items again! Get personalized packing lists based on real weather forecasts 
+              and your planned activities. Pack smart, travel worry-free with our intelligent travel companion.
+            </p>
+          </motion.div>
+        </section>
 
         {/* Error Alert */}
         <AnimatePresence>
@@ -59,20 +60,21 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Form Section - Always Centered */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-12"
-        >
-          <Form />
-        </motion.div>
+        {/* Main Form Section */}
+        <section className="mb-12">
+          <motion.div
+            initial={{ opacity: 0, y:20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Form />
+          </motion.div>
+        </section>
 
-        {/* Results Section - Centered with Side Ads */}
+        {/* Results Section - Only show ads when there's meaningful content */}
         {showResults ? (
-          <div className="relative">
-            {/* Inline Ad between Form and Results - Centered */}
+          <section className="relative">
+            {/* Inline Ad between Form and Results - Only when content is present */}
             <div className="mb-8">
               <AdSlot 
                 slotId="content-inline" 
@@ -81,7 +83,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Main Results Content - Always Centered */}
+            {/* Main Results Content */}
             <div className="relative max-w-4xl mx-auto">
               {/* Sidebar Ads positioned absolutely on larger screens */}
               <div className="hidden xl:block">
@@ -123,76 +125,119 @@ export default function Home() {
                 </motion.div>
               </AnimatePresence>
             </div>
-          </div>
+          </section>
         ) : null}
 
-        {/* Features Section */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16"
-        >
-          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🌤️</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real Weather Data</h3>
-            <p className="text-gray-600">
-              Get accurate 5-day forecasts from OpenWeatherMap to pack for the actual conditions you'll face.
-            </p>
-          </div>
+        {/* Features Section with Enhanced Content */}
+        <section className="mt-16">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+              Why Choose PackWise for Your Travel Planning?
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <article className="text-center p-6 bg-white rounded-xl shadow-sm">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🌤️</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Real Weather Data</h3>
+                <p className="text-gray-600">
+                  Get accurate 5-day forecasts from OpenWeatherMap to pack for the actual conditions you'll face. Our weather integration ensures you're prepared for rain, sun, or snow.
+                </p>
+              </article>
 
-          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🎯</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Activity-Based Lists</h3>
-            <p className="text-gray-600">
-              Tailor your packing list based on your planned activities - from beach days to business meetings.
-            </p>
-          </div>
+              <article className="text-center p-6 bg-white rounded-xl shadow-sm">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🎯</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Activity-Based Lists</h3>
+                <p className="text-gray-600">
+                  Tailor your packing list based on your planned activities - from beach days to business meetings. Our intelligent system adapts to your specific travel needs.
+                </p>
+              </article>
 
-          <div className="text-center p-6 bg-white rounded-xl shadow-sm">
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">✅</span>
+              <article className="text-center p-6 bg-white rounded-xl shadow-sm">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">✅</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Smart Organization</h3>
+                <p className="text-gray-600">
+                  Check off items as you pack, toggle between light and full pack modes, and export your list. Stay organized throughout your entire packing process.
+                </p>
+              </article>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Smart Organization</h3>
-            <p className="text-gray-600">
-              Check off items as you pack, toggle between light and full pack modes, and export your list.
-            </p>
-          </div>
-        </motion.div>
+          </motion.div>
+        </section>
 
-        {/* CTA Section */}
-        {!showResults && (
+        {/* Additional Content Section for SEO */}
+        <section className="mt-16">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="text-center mt-16 p-8 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl"
+            className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-8"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Ready to Pack Smart?
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
+              Travel Smarter with AI-Powered Packing
             </h2>
-            <p className="text-gray-600 mb-6">
-              Fill out the form above to generate your personalized packing list in seconds.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-              <span className="flex items-center">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                Real weather data
-              </span>
-              <span className="flex items-center">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                Activity-specific items
-              </span>
-              <span className="flex items-center">
-                <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                Downloadable lists
-              </span>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">Perfect for Every Traveler</h3>
+                <p className="text-gray-600 mb-4">
+                  Whether you're a frequent business traveler, a family planning a vacation, or an adventure seeker heading into the wilderness, PackWise adapts to your unique needs. Our AI considers your destination's climate, your planned activities, and even your personal preferences to create the perfect packing list.
+                </p>
+                <p className="text-gray-600">
+                  No more last-minute panic about forgotten essentials. PackWise ensures you have everything you need for a comfortable and enjoyable trip.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">How It Works</h3>
+                <ol className="list-decimal list-inside text-gray-600 space-y-2">
+                  <li>Enter your destination and travel dates</li>
+                  <li>Select your planned activities and preferences</li>
+                  <li>Get instant weather data and AI-powered suggestions</li>
+                  <li>Review and customize your personalized packing list</li>
+                  <li>Download or share your list for easy access</li>
+                </ol>
+              </div>
             </div>
           </motion.div>
+        </section>
+
+        {/* CTA Section - Only show when no results are displayed */}
+        {!showResults && (
+          <section className="mt-16">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="text-center p-8 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl"
+            >
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Ready to Pack Smart?
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Fill out the form above to generate your personalized packing list in seconds. Join thousands of travelers who trust PackWise for their trip planning needs.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+                <span className="flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  Real weather data
+                </span>
+                <span className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  Activity-specific items
+                </span>
+                <span className="flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                  Downloadable lists
+                </span>
+              </div>
+            </motion.div>
+          </section>
         )}
       </div>
     </div>
