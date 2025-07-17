@@ -101,15 +101,6 @@ export default function RootLayout({
           
           <footer className="bg-gray-50 border-t border-gray-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              {/* Footer Ad */}
-              <div className="mb-6">
-                <AdSlot 
-                  slotId="footer-ad" 
-                  type="inline" 
-                  className="mx-auto"
-                />
-              </div>
-              
               {/* Footer Navigation */}
               <div className="flex flex-col items-center space-y-4 mb-6">
                 <nav className="flex flex-wrap justify-center gap-6 text-sm">
@@ -119,8 +110,8 @@ export default function RootLayout({
                   <Link href="/privacy-policy" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">
                     Privacy Policy
                   </Link>
-                  <Link href="/privacy" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">
-                    Privacy & Ads
+                  <Link href="/terms" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">
+                    Terms of Service
                   </Link>
                 </nav>
               </div>
@@ -135,16 +126,6 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-
-          {/* Sticky Mobile Ad */}
-          <div className="fixed bottom-0 left-0 right-0 z-40">
-            <AdSlot 
-              slotId="mobile-sticky" 
-              type="sticky" 
-              mobileOnly
-              className="bg-white border-t border-gray-200 shadow-lg"
-            />
-          </div>
 
           {/* GDPR Banner */}
           <GDPRBanner />

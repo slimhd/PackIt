@@ -71,12 +71,6 @@ export default function PrivacyPolicyPage() {
                   </p>
                 </div>
                 <div className="border border-gray-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-800 mb-2">Google AdSense</h3>
-                  <p className="text-gray-600 text-sm">
-                    Displays relevant advertisements to support our free service. Follows Google's privacy standards and respects your ad preferences.
-                  </p>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-800 mb-2">OpenWeatherMap</h3>
                   <p className="text-gray-600 text-sm">
                     Provides weather forecasts for your destination. Only location and dates are shared, no personal information.
@@ -86,6 +80,12 @@ export default function PrivacyPolicyPage() {
                   <h3 className="font-semibold text-gray-800 mb-2">Analytics Services</h3>
                   <p className="text-gray-600 text-sm">
                     Help us understand usage patterns to improve PackWise. All data is anonymized and aggregated.
+                  </p>
+                </div>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-800 mb-2">Google AdSense</h3>
+                  <p className="text-gray-600 text-sm">
+                    Displays relevant advertisements to support our free service. Follows Google's privacy standards and respects your ad preferences.
                   </p>
                 </div>
               </div>

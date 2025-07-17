@@ -138,7 +138,7 @@ export default function AboutPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-2">Completely Free</h3>
                     <p className="text-gray-600 text-sm">
-                      No subscriptions, no hidden fees. Supported by optional, respectful advertising that respects your privacy.
+                      No subscriptions, no hidden fees. PackWise is free to use and always will be.
                     </p>
                   </div>
                 </div>
