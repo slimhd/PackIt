@@ -11,7 +11,11 @@ A modern, production-ready web application that generates personalized packing l
 - **Smart Pack Modes**: Toggle between "Light Pack" and "Full Pack" for different trip lengths
 - **Interactive Checklist**: Check off items as you pack with progress tracking
 - **Custom Items**: Add your own items to any packing list
-- **Export Functionality**: Download your packing list as a text file
+- **Export & Sharing**: Multiple export options including PDF, screenshot, email, and social media sharing
+- **PDF Generation**: Clean, printable PDFs with trip details and weather information
+- **Screenshot Capture**: High-quality images perfect for social media sharing
+- **Email Integration**: Send packing lists directly to your email with beautiful formatting
+- **Social Sharing**: Share via WhatsApp, Telegram, Twitter, and Instagram
 - **Responsive Design**: Beautiful UI that works on all devices
 - **City Autocomplete**: Smart city search with suggestions
 - **Rate Limiting**: Built-in API protection against abuse and spam
@@ -35,6 +39,9 @@ A modern, production-ready web application that generates personalized packing l
 - **APIs**: 
   - OpenWeatherMap for real weather data
   - OpenRouter for AI-powered packing suggestions
+- **Export Libraries**: jsPDF for PDF generation, html2canvas for screenshots
+- **Email**: Nodemailer for secure email delivery
+- **Notifications**: React Hot Toast for user feedback
 - **Rate Limiting**: Upstash Redis with sliding window algorithm
 - **TypeScript**: Full type safety throughout
 - **Security**: Server-side API key handling, CORS protection
@@ -82,9 +89,15 @@ A modern, production-ready web application that generates personalized packing l
    
    # Required: Site URL (Update for production)
    NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   
+   # Optional: Email Configuration (for sending packing lists via email)
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_PASS=your_app_specific_password
    ```
    
    **🔒 Security Note**: All API keys and secrets are handled server-side only and never exposed to the browser. Only `NEXT_PUBLIC_SITE_URL` is exposed client-side for metadata purposes.
+   
+   **📧 Email Setup**: For email functionality, you'll need to configure an email service. Gmail users should use an app-specific password. See the email configuration section below for details.
 
 4. **Run the development server**
    ```bash
@@ -167,11 +180,85 @@ For other platforms (Netlify, Railway, etc.):
 - [ ] Upstash Redis database created and configured
 - [ ] OpenRouter AI API key obtained and set
 - [ ] `NEXT_PUBLIC_SITE_URL` updated with production domain
+- [ ] Email service configured (optional, for email sharing)
 - [ ] Google AdSense account setup (optional)
 - [ ] Privacy policy reviewed for your jurisdiction
 - [ ] Custom domain configured (optional)
 - [ ] Rate limiting tested and working
 - [ ] Build process completes without errors
+
+## 📤 Export & Sharing Features
+
+PackWise now includes comprehensive export and sharing capabilities to help you save and share your packing lists:
+
+### 🖨️ PDF Export
+- **Clean Layout**: Professional PDF format with trip details and weather information
+- **Print-Ready**: Optimized for printing with proper page breaks
+- **Smart Formatting**: Items grouped by category with checkboxes and quantities
+- **Weather Summary**: Includes 5-day weather forecast in the PDF
+- **Progress Tracking**: Shows packing progress percentage
+- **File Naming**: Automatic naming with destination and date
+
+### 📸 Screenshot Export
+- **High Quality**: 2x resolution for crisp images
+- **Social Media Ready**: Perfect dimensions for sharing on platforms
+- **Trip Overlay**: Destination and dates displayed as overlay
+- **Watermark**: Includes PackWise branding
+- **PNG Format**: Lossless quality for sharing
+
+### 📧 Email Integration
+- **Beautiful Templates**: HTML email with professional styling
+- **Complete Information**: Includes weather, progress, and all items
+- **AI Suggestions Highlighted**: Special formatting for AI-recommended items
+- **Mobile Friendly**: Responsive email design
+- **Secure Delivery**: Server-side email processing
+
+### 📱 Social Media Sharing
+- **WhatsApp**: Direct sharing with formatted message
+- **Telegram**: Share with custom text and link
+- **Twitter/X**: Tweet with hashtags and link
+- **Instagram**: Copy shareable text to clipboard
+- **Universal Link**: Copy direct link to your packing list
+
+### 🔧 Email Configuration
+
+To enable email functionality, configure your email service:
+
+#### Gmail Setup (Recommended)
+1. Enable 2-factor authentication on your Gmail account
+2. Generate an app-specific password:
+   - Go to Google Account settings
+   - Security → 2-Step Verification → App passwords
+   - Generate password for "Mail"
+3. Add to your environment variables:
+   ```bash
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_PASS=your_16_character_app_password
+   ```
+
+#### Other Email Providers
+For other providers (SendGrid, Mailgun, etc.), update the email configuration in `app/api/send-email/route.ts`:
+
+```typescript
+return nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+```
+
+### 🎨 Customization
+
+The export features are highly customizable:
+
+- **PDF Styling**: Modify fonts, colors, and layout in `lib/pdfGenerator.ts`
+- **Screenshot Options**: Adjust quality, dimensions, and overlays in `lib/screenshotGenerator.ts`
+- **Email Templates**: Customize HTML templates in `app/api/send-email/route.ts`
+- **Social Sharing**: Update share text and URLs in `components/ExportOptions.tsx`
 
 ## 📁 Project Structure
 
@@ -179,7 +266,8 @@ For other platforms (Netlify, Railway, etc.):
 PackWise/
 ├── app/                    # Next.js App Router
 │   ├── api/               # Backend API routes
-│   │   └── weather/       # Secure weather API proxy
+│   │   ├── weather/       # Secure weather API proxy
+│   │   └── send-email/    # Email sending API
 │   ├── privacy/           # Privacy policy page
 │   ├── globals.css        # Global styles and TailwindCSS
 │   ├── layout.tsx         # Root layout with ads and GDPR banner
@@ -188,12 +276,16 @@ PackWise/
 │   ├── Form.tsx          # Main input form
 │   ├── PackingList.tsx   # Results and checklist
 │   ├── PackingItem.tsx   # Individual item component
-│   ├── DownloadButton.tsx # Export functionality
+│   ├── ExportOptions.tsx # Export and sharing options
+│   ├── ExportFormatToggle.tsx # Format selection toggle
+│   ├── DownloadButton.tsx # Legacy export functionality
 │   ├── AdSlot.tsx        # Reusable advertisement component
 │   └── GDPRBanner.tsx    # Cookie consent banner
 ├── lib/                  # Utility functions and business logic
 │   ├── weatherClient.ts  # Secure client-side weather service
-│   └── packingEngine.ts  # Core packing list generation
+│   ├── packingEngine.ts  # Core packing list generation
+│   ├── pdfGenerator.ts   # PDF generation utility
+│   └── screenshotGenerator.ts # Screenshot capture utility
 ├── store/                # State management
 │   └── usePackStore.ts   # Zustand store definition
 ├── public/               # Static assets

@@ -12,6 +12,7 @@ import {
 import { usePackStore } from '@/store/usePackStore';
 import PackingItem from './PackingItem';
 import DownloadButton from './DownloadButton';
+import ExportOptions from './ExportOptions';
 
 const PackingList = () => {
   const {
@@ -170,7 +171,7 @@ const PackingList = () => {
           </motion.button>
         </div>
 
-        <DownloadButton />
+        <ExportOptions />
       </div>
 
       {/* Add Custom Item Form */}
@@ -324,6 +325,16 @@ const PackingList = () => {
         <p className="text-gray-600">
           Your personalized packing list is ready. Don't forget to check the weather again before you leave!
         </p>
+      </motion.div>
+
+      {/* Export and Share Options */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mt-8"
+      >
+        <ExportOptions />
       </motion.div>
     </motion.div>
   );

@@ -1,0 +1,365 @@
+'use client';
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  DocumentArrowDownIcon,
+  PhotoIcon,
+  EnvelopeIcon,
+  ShareIcon,
+  ClipboardDocumentIcon,
+  XMarkIcon,
+  CheckIcon
+} from '@heroicons/react/24/outline';
+import { usePackStore } from '@/store/usePackStore';
+import { generatePDF } from '@/lib/pdfGenerator';
+import { captureScreenshot } from '@/lib/screenshotGenerator';
+import { toast } from 'react-hot-toast';
+import ExportFormatToggle from './ExportFormatToggle';
+
+interface ExportOptionsProps {
+  className?: string;
+}
+
+const ExportOptions = ({ className = '' }: ExportOptionsProps) => {
+  const { 
+    packingList, 
+    destination, 
+    startDate, 
+    endDate, 
+    isLightPack,
+    weatherData 
+  } = usePackStore();
+
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailAddress, setEmailAddress] = useState('');
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportFormat, setExportFormat] = useState<'pdf' | 'image'>('pdf');
+
+  if (!packingList.length) {
+    return null;
+  }
+
+  const handleDownload = async () => {
+    setIsExporting(true);
+    try {
+      if (exportFormat === 'pdf') {
+        await generatePDF({
+          packingList,
+          destination,
+          startDate,
+          endDate,
+          isLightPack,
+          weatherData
+        });
+        toast.success('PDF downloaded successfully!');
+      } else {
+        await captureScreenshot({
+          destination,
+          startDate,
+          endDate
+        });
+        toast.success('Screenshot downloaded successfully!');
+      }
+    } catch (error) {
+      toast.error(`Failed to generate ${exportFormat.toUpperCase()}`);
+      console.error(`${exportFormat} generation error:`, error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleEmailSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailAddress.trim()) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsSendingEmail(true);
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailAddress,
+          destination,
+          startDate,
+          endDate,
+          isLightPack,
+          packingList,
+          weatherData
+        }),
+      });
+
+      if (response.ok) {
+        toast.success('Packing list sent to your email!');
+        setShowEmailModal(false);
+        setEmailAddress('');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to send email');
+      }
+    } catch (error) {
+      toast.error('Failed to send email');
+      console.error('Email error:', error);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleSocialShare = (platform: string) => {
+    const shareText = `Here's my AI-generated packing list for ${destination}! Check out packwise.app to create yours ✈️🧠`;
+    const shareUrl = window.location.href;
+    
+    let shareLink = '';
+    
+    switch (platform) {
+      case 'whatsapp':
+        shareLink = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+        break;
+      case 'telegram':
+        shareLink = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+        break;
+      case 'twitter':
+        shareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'instagram':
+        // For Instagram, we'll copy the text to clipboard since direct sharing isn't possible
+        navigator.clipboard.writeText(shareText + ' ' + shareUrl);
+        toast.success('Share text copied to clipboard!');
+        return;
+      default:
+        return;
+    }
+    
+    window.open(shareLink, '_blank');
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard!');
+    } catch (error) {
+      toast.error('Failed to copy link');
+    }
+  };
+
+  const exportOptions = [
+    {
+      id: 'download',
+      label: `Download as ${exportFormat.toUpperCase()}`,
+      icon: exportFormat === 'pdf' ? DocumentArrowDownIcon : PhotoIcon,
+      onClick: handleDownload,
+      loading: isExporting,
+      color: exportFormat === 'pdf' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'
+    },
+    {
+      id: 'email',
+      label: 'Send via Email',
+      icon: EnvelopeIcon,
+      onClick: () => setShowEmailModal(true),
+      color: 'bg-purple-500 hover:bg-purple-600'
+    }
+  ];
+
+  const shareOptions = [
+    {
+      id: 'whatsapp',
+      label: 'Share via WhatsApp',
+      icon: '📱',
+      onClick: () => handleSocialShare('whatsapp'),
+      color: 'bg-green-500 hover:bg-green-600'
+    },
+    {
+      id: 'telegram',
+      label: 'Share via Telegram',
+      icon: '📬',
+      onClick: () => handleSocialShare('telegram'),
+      color: 'bg-blue-500 hover:bg-blue-600'
+    },
+    {
+      id: 'twitter',
+      label: 'Share on Twitter',
+      icon: '📢',
+      onClick: () => handleSocialShare('twitter'),
+      color: 'bg-sky-500 hover:bg-sky-600'
+    },
+    {
+      id: 'instagram',
+      label: 'Instagram Story',
+      icon: '📸',
+      onClick: () => handleSocialShare('instagram'),
+      color: 'bg-pink-500 hover:bg-pink-600'
+    },
+    {
+      id: 'copy',
+      label: 'Copy Link',
+      icon: ClipboardDocumentIcon,
+      onClick: handleCopyLink,
+      color: 'bg-gray-500 hover:bg-gray-600'
+    }
+  ];
+
+  return (
+    <>
+      <div className={`bg-white rounded-xl shadow-lg p-6 ${className}`}>
+        <div className="text-center mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
+            Save or Share Your Packing List
+          </h3>
+          <p className="text-gray-600">
+            Export your list or share it with friends and family
+          </p>
+        </div>
+
+        {/* Export Options */}
+        <div className="mb-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+            <DocumentArrowDownIcon className="w-5 h-5 mr-2" />
+            Export Options
+          </h4>
+          
+          {/* Format Toggle */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Download Format:
+            </label>
+            <ExportFormatToggle 
+              selectedFormat={exportFormat}
+              onFormatChange={setExportFormat}
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {exportOptions.map((option) => (
+              <motion.button
+                key={option.id}
+                onClick={option.onClick}
+                disabled={option.loading}
+                className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-lg text-white font-medium transition-colors ${option.color} disabled:opacity-50 disabled:cursor-not-allowed`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {option.loading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <option.icon className="w-5 h-5" />
+                )}
+                <span>{option.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* Share Options */}
+        <div>
+          <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+            <ShareIcon className="w-5 h-5 mr-2" />
+            Share Options
+          </h4>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {shareOptions.map((option) => (
+              <motion.button
+                key={option.id}
+                onClick={option.onClick}
+                className={`flex flex-col items-center justify-center space-y-1 px-3 py-3 rounded-lg text-white font-medium transition-colors ${option.color}`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {typeof option.icon === 'string' ? (
+                  <span className="text-xl">{option.icon}</span>
+                ) : (
+                  <option.icon className="w-5 h-5" />
+                )}
+                <span className="text-xs text-center">{option.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Email Modal */}
+      <AnimatePresence>
+        {showEmailModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowEmailModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-xl p-6 w-full max-w-md"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Send Packing List via Email
+                </h3>
+                <button
+                  onClick={() => setShowEmailModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              <form onSubmit={handleEmailSend} className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={emailAddress}
+                    onChange={(e) => setEmailAddress(e.target.value)}
+                    placeholder="your@email.com"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowEmailModal(false)}
+                    className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSendingEmail}
+                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+                  >
+                    {isSendingEmail ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <EnvelopeIcon className="w-4 h-4" />
+                        <span>Send</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+export default ExportOptions; 

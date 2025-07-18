@@ -10,14 +10,20 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@types/nodemailer": "^6.4.17",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.35.1",
     "@vercel/analytics": "^1.5.0",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.16",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.3",
+    "jspdf": "^3.0.1",
     "next": "14.0.3",
+    "nodemailer": "^7.0.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-hot-toast": "^2.5.2",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
