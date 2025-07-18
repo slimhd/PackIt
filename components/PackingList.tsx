@@ -138,7 +138,7 @@ const PackingList = () => {
       </div>
 
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+      <div className="flex flex-col sm:flex-row justify-center items-center mb-6 space-y-4 sm:space-y-0">
         <div className="flex items-center space-x-4">
           <motion.button
             onClick={togglePackMode}
@@ -170,8 +170,6 @@ const PackingList = () => {
             <span>Start New Trip</span>
           </motion.button>
         </div>
-
-        <ExportOptions />
       </div>
 
       {/* Add Custom Item Form */}
@@ -327,15 +325,22 @@ const PackingList = () => {
         </p>
       </motion.div>
 
+      {/* Divider */}
+      <hr className="my-8 border-gray-200" />
+
       {/* Export and Share Options */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="mt-8"
-      >
-        <ExportOptions />
-      </motion.div>
+      <section className="mt-8 border-t pt-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+          Save or Share Your Packing List
+        </h3>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <ExportOptions />
+        </motion.div>
+      </section>
     </motion.div>
   );
 };
