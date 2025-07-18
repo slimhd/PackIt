@@ -13,12 +13,22 @@ export const captureScreenshot = async ({
 }: CaptureScreenshotParams): Promise<void> => {
   return new Promise((resolve, reject) => {
     try {
-      // Find the packing list element
-      const packingListElement = document.getElementById('results');
+      // Find the export view element (clean template for screenshots)
+      let exportElement = document.getElementById('export-view');
       
-      if (!packingListElement) {
-        reject(new Error('Packing list element not found'));
+      if (!exportElement) {
+        // Fallback to regular results if export view not found
+        exportElement = document.getElementById('results');
+      }
+      
+      if (!exportElement) {
+        reject(new Error('Export element not found'));
         return;
+      }
+
+      // Show the export view temporarily
+      if (exportElement.id === 'export-view') {
+        exportElement.style.display = 'block';
       }
 
       // Create a temporary container for the screenshot
@@ -33,8 +43,8 @@ export const captureScreenshot = async ({
       tempContainer.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
       tempContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
       
-      // Clone the packing list content
-      const clonedContent = packingListElement.cloneNode(true) as HTMLElement;
+      // Clone the export element content
+      const clonedContent = exportElement.cloneNode(true) as HTMLElement;
       
       // Remove any interactive elements that shouldn't be in the screenshot
       const buttonsToRemove = clonedContent.querySelectorAll('button, input, select');
@@ -102,7 +112,7 @@ export const captureScreenshot = async ({
         logging: false,
         onclone: (clonedDoc: Document) => {
           // Ensure the cloned document has the same styles
-          const clonedElement = clonedDoc.getElementById('results');
+          const clonedElement = clonedDoc.getElementById('export-view') || clonedDoc.getElementById('results');
           if (clonedElement) {
             clonedElement.style.transform = 'none';
             clonedElement.style.animation = 'none';
@@ -112,6 +122,11 @@ export const captureScreenshot = async ({
       
       // Capture the screenshot
       html2canvas(tempContainer, options).then((canvas) => {
+        // Hide the export view again
+        if (exportElement.id === 'export-view') {
+          exportElement.style.display = 'none';
+        }
+        
         // Remove the temporary container
         document.body.removeChild(tempContainer);
         
@@ -140,6 +155,11 @@ export const captureScreenshot = async ({
           }
         }, 'image/png', 0.9);
       }).catch((error) => {
+        // Hide the export view on error
+        if (exportElement.id === 'export-view') {
+          exportElement.style.display = 'none';
+        }
+        
         // Clean up on error
         if (document.body.contains(tempContainer)) {
           document.body.removeChild(tempContainer);

@@ -30,50 +30,81 @@ export const generatePDF = async ({
       doc.setFont('Helvetica', 'normal');
       doc.setFontSize(12);
       
-      // Header
-      doc.setFontSize(24);
+      // Title
+      doc.setFontSize(20);
       doc.setFont('Helvetica', 'bold');
-      doc.text('PackWise - Smart Packing List', pageWidth / 2, yPosition, { align: 'center' });
-      yPosition += 15;
-
-      // Trip details
-      doc.setFontSize(14);
-      doc.setFont('Helvetica', 'bold');
-      doc.text(`Destination: ${destination}`, margin, yPosition);
-      yPosition += 10;
-
+      let title = `Packing List for ${destination}`;
       if (startDate && endDate) {
         const startStr = startDate.toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
+          month: 'short', 
           day: 'numeric' 
         });
         const endStr = endDate.toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
+          month: 'short', 
           day: 'numeric' 
         });
-        doc.text(`Dates: ${startStr} - ${endStr}`, margin, yPosition);
-        yPosition += 10;
+        title += ` – ${startStr} to ${endStr}`;
       }
-
-      doc.text(`Pack Mode: ${isLightPack ? 'Light Pack' : 'Full Pack'}`, margin, yPosition);
+      doc.text(title, pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 15;
 
-      // Weather summary
-      if (weatherData) {
-        doc.setFontSize(12);
+      // Trip details
+      doc.setFontSize(12);
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`Pack Mode: ${isLightPack ? 'Light Pack' : 'Full Pack'}`, margin, yPosition);
+      yPosition += 10;
+
+      // Detailed Weather Forecast
+      if (weatherData && weatherData.forecast.length > 0) {
+        doc.setFontSize(14);
         doc.setFont('Helvetica', 'bold');
-        doc.text('Weather Forecast:', margin, yPosition);
-        yPosition += 8;
+        doc.text('📅 Trip Weather Forecast (Day by Day)', margin, yPosition);
+        yPosition += 12;
         
         doc.setFont('Helvetica', 'normal');
         doc.setFontSize(10);
-        // Clean the weather text to remove any HTML or special characters
-        const weatherText = weatherData.summary.replace(/[^\w\s.,!?-]/g, '');
-        const weatherLines = doc.splitTextToSize(weatherText, contentWidth);
-        doc.text(weatherLines, margin, yPosition);
-        yPosition += weatherLines.length * 5 + 10;
+        
+        weatherData.forecast.forEach((day, index) => {
+          // Check if we need a new page
+          if (yPosition > 250) {
+            doc.addPage();
+            yPosition = margin;
+          }
+          
+          const date = new Date(day.date);
+          const dateStr = date.toLocaleDateString('en-US', { 
+            month: 'long', 
+            day: 'numeric',
+            year: 'numeric'
+          });
+          
+          // Get weather icon/emoji
+          let weatherIcon = '🌤️';
+          switch (day.main.toLowerCase()) {
+            case 'clear':
+              weatherIcon = '☀️';
+              break;
+            case 'rain':
+            case 'drizzle':
+            case 'thunderstorm':
+              weatherIcon = '🌧️';
+              break;
+            case 'snow':
+              weatherIcon = '❄️';
+              break;
+            case 'clouds':
+              weatherIcon = '☁️';
+              break;
+            default:
+              weatherIcon = '🌤️';
+          }
+          
+          const weatherLine = `🗓️ ${dateStr} — ${weatherIcon} ${day.description} — High: ${day.temp_max}°C, Low: ${day.temp_min}°C`;
+          doc.text(weatherLine, margin, yPosition);
+          yPosition += 8;
+        });
+        
+        yPosition += 10; // Extra space after weather
       }
 
       // Packing progress
@@ -81,10 +112,15 @@ export const generatePDF = async ({
       const totalCount = packingList.length;
       const progressPercentage = totalCount > 0 ? Math.round((packedCount / totalCount) * 100) : 0;
       
-      doc.setFontSize(12);
+      doc.setFontSize(14);
       doc.setFont('Helvetica', 'bold');
-      doc.text(`Packing Progress: ${packedCount}/${totalCount} items (${progressPercentage}%)`, margin, yPosition);
-      yPosition += 15;
+      doc.text('📋 Packing List', margin, yPosition);
+      yPosition += 8;
+      
+      doc.setFontSize(11);
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`Progress: ${packedCount}/${totalCount} items packed (${progressPercentage}%)`, margin, yPosition);
+      yPosition += 12;
 
       // Group items by category
       const groupedItems = packingList.reduce((groups, item) => {
@@ -131,6 +167,15 @@ export const generatePDF = async ({
           
           // Add AI suggestion indicator
           const fullText = item.isAISuggestion ? `${itemText} [AI]` : itemText;
+          
+          // Set font weight based on packed status
+          if (item.isPacked) {
+            doc.setFont('Helvetica', 'bold');
+            doc.setTextColor(0, 128, 0); // Green color for packed items
+          } else {
+            doc.setFont('Helvetica', 'normal');
+            doc.setTextColor(0, 0, 0); // Black color for unpacked items
+          }
           
           doc.text(fullText, margin + 5, yPosition);
           yPosition += 6;

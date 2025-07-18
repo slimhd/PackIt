@@ -13,12 +13,16 @@ import { usePackStore } from '@/store/usePackStore';
 import PackingItem from './PackingItem';
 import DownloadButton from './DownloadButton';
 import ExportOptions from './ExportOptions';
+import ExportView from './ExportView';
 
 const PackingList = () => {
   const {
     weatherData,
     packingList,
     isLightPack,
+    destination,
+    startDate,
+    endDate,
     togglePackMode,
     toggleItemPacked,
     addCustomItem,
@@ -341,6 +345,16 @@ const PackingList = () => {
           <ExportOptions />
         </motion.div>
       </section>
+
+      {/* Hidden Export View for Screenshots */}
+      <ExportView
+        destination={destination}
+        startDate={startDate}
+        endDate={endDate}
+        isLightPack={isLightPack}
+        weatherData={weatherData}
+        packingList={packingList}
+      />
     </motion.div>
   );
 };
