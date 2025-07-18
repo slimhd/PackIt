@@ -156,6 +156,9 @@ https://packwise.app`;
         toast.success('Packing list sent to your email!');
         setShowEmailModal(false);
         setEmailAddress('');
+      } else if (response.status === 429) {
+        const error = await response.json();
+        toast.error(`⚠️ Too many emails sent! Please wait an hour before sending more. (${error.remaining || 0} remaining)`);
       } else {
         const error = await response.json();
         toast.error(error.message || 'Failed to send email');

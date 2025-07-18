@@ -18,7 +18,7 @@ A modern, production-ready web application that generates personalized packing l
 - **Social Sharing**: Share via WhatsApp, Telegram, Twitter, and Instagram
 - **Responsive Design**: Beautiful UI that works on all devices
 - **City Autocomplete**: Smart city search with suggestions
-- **Rate Limiting**: Built-in API protection against abuse and spam
+- **Rate Limiting**: Redis-based rate limiting (3 emails per hour per IP) to prevent abuse
 
 ### Production Features 🚀
 - **Monetization Ready**: Strategic Google AdSense integration with multiple ad placements
@@ -186,6 +186,25 @@ For other platforms (Netlify, Railway, etc.):
 - [ ] Custom domain configured (optional)
 - [ ] Rate limiting tested and working
 - [ ] Build process completes without errors
+
+## 🔒 Security & Rate Limiting
+
+### Email Rate Limiting
+PackWise implements robust rate limiting to prevent abuse and ensure fair usage:
+
+- **Redis-Based Protection**: Uses Upstash Redis for distributed rate limiting
+- **IP-Based Limits**: 3 email sends per hour per unique IP address
+- **Automatic Detection**: Handles proxy IPs (x-forwarded-for, x-real-ip) for accurate tracking
+- **User-Friendly Errors**: Clear error messages with remaining quota information
+- **Monitoring**: Server-side logging for rate limit analytics
+- **No Failed Count**: Failed email attempts don't count towards the limit
+
+### Security Features
+- **Server-Side API Keys**: All sensitive keys handled server-side only
+- **Input Validation**: Comprehensive validation for email addresses and content
+- **Content Sanitization**: Automatic sanitization of user inputs
+- **CORS Protection**: Proper CORS headers for API endpoints
+- **Error Handling**: Secure error responses without exposing internal details
 
 ## 📤 Export & Sharing Features
 
