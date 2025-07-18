@@ -10,6 +10,15 @@ interface GeneratePDFParams {
   weatherData: WeatherData | null;
 }
 
+// Utility function to clean text for PDF export
+const cleanTextForPDF = (text: string): string => {
+  return text
+    .replace(/^&+\s*/, '') // Remove leading & symbols
+    .replace(/[^\w\s.,!?()-]/g, '') // Keep only safe characters
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+};
+
 export const generatePDF = async ({
   packingList,
   destination,
@@ -33,7 +42,8 @@ export const generatePDF = async ({
       // Title
       doc.setFontSize(20);
       doc.setFont('Helvetica', 'bold');
-      let title = `Packing List for ${destination}`;
+      const cleanDestination = cleanTextForPDF(destination);
+      let title = `Packing List for ${cleanDestination}`;
       if (startDate && endDate) {
         const startStr = startDate.toLocaleDateString('en-US', { 
           month: 'short', 
@@ -58,7 +68,7 @@ export const generatePDF = async ({
       if (weatherData && weatherData.forecast.length > 0) {
         doc.setFontSize(14);
         doc.setFont('Helvetica', 'bold');
-        doc.text('📅 Trip Weather Forecast (Day by Day)', margin, yPosition);
+        doc.text('Trip Weather Forecast (Day by Day)', margin, yPosition);
         yPosition += 12;
         
         doc.setFont('Helvetica', 'normal');
@@ -78,28 +88,32 @@ export const generatePDF = async ({
             year: 'numeric'
           });
           
-          // Get weather icon/emoji
-          let weatherIcon = '🌤️';
+          // Get weather description (no emojis)
+          let weatherDesc = cleanTextForPDF(day.description);
           switch (day.main.toLowerCase()) {
             case 'clear':
-              weatherIcon = '☀️';
+              weatherDesc = 'Clear';
               break;
             case 'rain':
+              weatherDesc = 'Rain';
+              break;
             case 'drizzle':
+              weatherDesc = 'Light Rain';
+              break;
             case 'thunderstorm':
-              weatherIcon = '🌧️';
+              weatherDesc = 'Thunderstorm';
               break;
             case 'snow':
-              weatherIcon = '❄️';
+              weatherDesc = 'Snow';
               break;
             case 'clouds':
-              weatherIcon = '☁️';
+              weatherDesc = 'Cloudy';
               break;
             default:
-              weatherIcon = '🌤️';
+              weatherDesc = weatherDesc.charAt(0).toUpperCase() + weatherDesc.slice(1);
           }
           
-          const weatherLine = `🗓️ ${dateStr} — ${weatherIcon} ${day.description} — High: ${day.temp_max}°C, Low: ${day.temp_min}°C`;
+          const weatherLine = `${dateStr} — ${weatherDesc} — High: ${day.temp_max}°C, Low: ${day.temp_min}°C`;
           doc.text(weatherLine, margin, yPosition);
           yPosition += 8;
         });
@@ -114,7 +128,7 @@ export const generatePDF = async ({
       
       doc.setFontSize(14);
       doc.setFont('Helvetica', 'bold');
-      doc.text('📋 Packing List', margin, yPosition);
+      doc.text('Packing List', margin, yPosition);
       yPosition += 8;
       
       doc.setFontSize(11);
@@ -160,10 +174,12 @@ export const generatePDF = async ({
           }
 
           const quantity = isLightPack ? item.quantity.light : item.quantity.full;
-          const checkbox = item.isPacked ? '☑' : '☐';
-          // Clean the item name to remove any special characters that might cause corruption
-          const cleanItemName = item.name.replace(/[^\w\s.,!?-]/g, '');
-          const itemText = `${checkbox} ${cleanItemName}${quantity > 1 ? ` (${quantity})` : ''}`;
+          
+          // Clean the item name using utility function
+          const cleanItemName = cleanTextForPDF(item.name);
+          
+          // Use bullet point format
+          const itemText = `• ${cleanItemName}${quantity > 1 ? ` (${quantity})` : ''}`;
           
           // Add AI suggestion indicator
           const fullText = item.isAISuggestion ? `${itemText} [AI]` : itemText;

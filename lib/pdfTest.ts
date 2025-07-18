@@ -2,11 +2,11 @@
 import { generatePDF } from './pdfGenerator';
 import { PackingItem, WeatherData } from '@/store/usePackStore';
 
-// Test data with various character types
+// Test data with various character types (including problematic ones)
 const testPackingList: PackingItem[] = [
   {
     id: '1',
-    name: 'T-Shirt (Clean & Simple)',
+    name: '&T-Shirt (Clean & Simple)',
     category: 'Clothing',
     isPacked: false,
     isCustom: false,
@@ -22,7 +22,7 @@ const testPackingList: PackingItem[] = [
   },
   {
     id: '3',
-    name: 'Charging Cable - USB-C',
+    name: '&Charging Cable - USB-C',
     category: 'Electronics',
     isPacked: false,
     isCustom: false,
